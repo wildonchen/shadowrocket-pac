@@ -33,6 +33,7 @@ if len(domain) == 0:
     print("未能正确识别文件")
     exit()
 con = ''
+domain.sort()
 for i in range(0, len(domain)):
     # 拼接成 DOMAIN-SUFFIX,t.me,PROXY 这样的格式
     con += '\n' + 'DOMAIN-SUFFIX,' +domain[i] + ',PROXY'
@@ -52,6 +53,7 @@ try:
                 line_new = line_new + '\n' + '# GFWlist Start' +  con + '\n' + '# GFWlist End' + '\n'
             line_new += '\n'
             ff.write(line_new)
+    print('共写入 ' + str(len(domain)) + ' 个被墙域名规则')
 except:
     print("写入文件错误")
     exit()
