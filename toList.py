@@ -2,7 +2,7 @@
 import re
 
 try:
-    # 打开SSR pac文件，请确保有按照SSR软件，以及生成了GFWlist pac文件
+    # 打开SSR pac文件，请确保有安装SSR软件，以及生成了GFWlist pac文件
     file_object = open('D:\Portable Application\ShadowsocksR-win-4.9.2\pac.txt','r')
 except:
     print("pac.txt 文件不存在或路径错误")
