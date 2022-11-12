@@ -1,5 +1,5 @@
 # 本脚本用于SSR GFWlist pac文件转IOS版shadowrocket配置文件
-import re
+import re,datetime
 
 try:
     # 打开SSR pac文件，请确保有安装SSR软件，以及生成了GFWlist pac文件
@@ -43,10 +43,14 @@ try:
     with open('template.conf','r') as f:
         line = f.readlines()
         for line_list in line:
-            line_new =line_list.replace('\n','')
+            line_new = line_list.replace('\n','')
+            # 头行标记时间
+            if line_new+'\n' == line[0]:
+                line_new = '# Shadowrocket: ' + datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S') + '\n' + '# https://github.com/wildonchen/shadowrocket-GFWlist' + '\n' + line_new
+            # 在 [Rule] 下面新增规则
             if line_new == '[Rule]':
-                line_new = line_new + '\n' + '# GFWlist' +  con
-            line_new = line_new  +'\n'
+                line_new = line_new + '\n' + '# GFWlist Start' +  con + '\n' + '# GFWlist End' + '\n'
+            line_new += '\n'
             ff.write(line_new)
 except:
     print("写入文件错误")
