@@ -22,7 +22,7 @@ try:
         lastModified -= datetime.timedelta(hours = timei - 8)
     else :
         lastModified += datetime.timedelta(hours = abs(8 - timei))
-    lastModified = '\n'+ '# 列表更新时间: ' + str(lastModified)
+    lastModified = '\n'+ '# Last update: ' + str(lastModified)
 except:
     lastModified =""
 
