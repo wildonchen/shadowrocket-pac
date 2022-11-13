@@ -14,7 +14,7 @@ GFWlist.conf 是为了只让被墙域名使用代理，尽可能的避免使用�
 
 再打开IOS 端的 Shadowrocket 软件，然后按照下图步骤操作即可：
 
-![demo](demo.gif)
+![demo](tool/images/demo.gif)
 
 至此好好享受吧。如果你单纯只是使用，下面的内容就不用再看。
 
