@@ -18,7 +18,7 @@ for i in range(0, len(urlList)):
     # 过滤
     if '@' not in urlList[i] and '.' in urlList[i] and '!' not in urlList[i]:
         # 去除|，去除协议头
-        url = urlList[i].replace("|","").replace("https://","").replace("http://","")
+        url = urlList[i].replace("|","").replace("https://:","").replace("http://:","")
         # 去除第一个.
         if len(url) and url[0] == '.':
             url = url.replace(".", "", 1)
