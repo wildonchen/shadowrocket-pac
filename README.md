@@ -1,6 +1,6 @@
 # GFWlist
 
-根据 SSR GFWlist 生成的 shadowrocket 配置文件，用于IOS端。这和默认的配置文件有什么区别？这就需要知道什么是 PAC 了。
+根据 [GFWlist](https://github.com/gfwlist/gfwlist) 生成的 shadowrocket 配置文件，用于IOS端。这和默认的配置文件有什么区别？这就需要知道什么是 PAC 了。
 
 > PAC就是让代理软件通过PAC代理规则文件 进行上网流量分流，比如让国内IP、域名的流量直连，让国外的IP、域名通过SSR代理连接。
 
@@ -22,17 +22,9 @@ GFWlist.conf 是为了只让被墙域名使用代理，尽可能的避免使用�
 
 ## toList.py
 
-如果你有这方便的兴趣，我想你能看懂里面的注释，这是一个转换脚本。SSR GFWlist PAC 转  shadowrocket 配置文件。
+如果你有这方便的兴趣，我想你能看懂里面的注释，这是一个转换脚本。GFWlist 转  shadowrocket 配置文件。
 
-前提是已经下载SSR到win电脑上，如果没有请先下载，下载地址 https://github.com/shadowsocksrr/shadowsocksr-csharp/releases
-
-打开exe程序再在任务栏如图操作，生成pac文件。
-
-![demoSSR.png](demoSSR.png)
-
-生成后修改 toList.py 里的 pac.txt 路径，
-
-再命令行执行 python toList.py
+令行执行 python toList.py
 
 即可在同目录生成最新的 GFWlist.conf 文件。
 
@@ -40,4 +32,5 @@ template.conf 文件是一个 shadowrocket 配置模板，用于合并生成新�
 
 ## 最后想说
 
-根据  SSR GFWlist 得到的被墙域名，只能涵盖大部分常用域名，但依然会有被墙的域名没有收录，如果有需要，欢迎提出反馈，用于及时更新到 GFWlist.conf，谢谢。
+根据 GFWlist 得到的被墙域名，只能涵盖大部分常用域名，但依然会有被墙的域名没有收录，如果有需要，欢迎提出反馈，用于及时更新到 GFWlist.conf，谢谢。
+
