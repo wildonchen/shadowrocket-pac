@@ -1,5 +1,5 @@
 # 本脚本用于 GFWlist 文件转IOS版 Shadowrocket 配置文件
-import requests,base64,datetime,random,re
+import requests,base64,random,re
 
 def txtContent(url,type=""):
     ''' 获取远程文件 '''
@@ -27,56 +27,20 @@ def txtContent(url,type=""):
         print(err)
         exit()
 
-def is_valid_domain(value):
-    ''' 校验域名是否合法 '''
-    pattern = re.compile(
-    r'^(([a-zA-Z]{1})|([a-zA-Z]{1}[a-zA-Z]{1})|'
-    r'([a-zA-Z]{1}[0-9]{1})|([0-9]{1}[a-zA-Z]{1})|'
-    r'([a-zA-Z0-9][-_.a-zA-Z0-9]{0,61}[a-zA-Z0-9]))\.'
-    r'([a-zA-Z]{2,13}|[a-zA-Z0-9-]{2,30}.[a-zA-Z]{2,3})$'
-    )
-    return True if pattern.match(value) else False
-
 def domainList(urlList):
-    ''' 被墙名单域名与广告域名处理 '''
+    ''' 域名处理 '''
     domain = []
     print("开始匹配域名")
     for i in range(0, len(urlList)):
         nowUrl = urlList[i]
-        # 第一层过滤
-        if ('@' not in nowUrl) and ( '.'  in nowUrl) and ('#' not in nowUrl) and ('!' not in nowUrl) and ('$' not in nowUrl):
-            # 去除|，去除协议头
-            url = nowUrl.replace("|","").replace("https://","").replace("http://","")
-            # 去除第一个.
-            if len(url) and url[0] == '.':
-                url = url.replace(".", "", 1)
-            # 去除*.
-            if len(url) >2 and url[:2] == '*.':
-                url = url.replace("*.", "", 1)
-            # 去除^
-            url = url.replace("^", "")
-            # 去重以及做最后过滤
-            url = url.split('/')[0]
-            if is_valid_domain(url) and (url not in domain):
-                print("添加域名 " + url)
-                domain.append(url)
-    if len(domain) == 0:
-        print("未获取到任何规则")
-        exit()
-    domain.sort()
-    return domain
-
-def domainList2(urlList):
-    ''' 白名单域名处理 '''
-    domain = []
-    print("开始匹配域名")
-    for i in range(0, len(urlList)):
-        url=urlList[i]
-        if len(url):
-            url = url.split("/")[1]
-            if is_valid_domain(url) and (url not in domain):
-                print("添加域名 " + url)
-                domain.append(url)
+        # 基本过滤
+        if ('@' not in nowUrl)  and ('#' not in nowUrl) and ('!' not in nowUrl) and ('$' not in nowUrl):
+            # 正则匹配
+            pattern = re.compile(r"(?:[\w](?:[\w\-]{0,61}[\w])?\.)+[a-zA-Z]{2,6}")
+            url = pattern.findall(nowUrl)
+            if len(url) and url[0] not in domain:
+                print('匹配到域名 ' + url[0])
+                domain.append(url[0])
     if len(domain) == 0:
         print("未获取到任何规则")
         exit()
@@ -92,7 +56,7 @@ def conConfig(domain, type="PROXY"):
 
 def writeToConf(filename,con):
     ''' 合并模板写入 conf 文件 '''
-    print("开始写入文件")
+    print("开始写入 " + filename)
     try:
         ff = open('../'+filename,'w')
         with open('template.conf','r') as f:
@@ -118,7 +82,8 @@ def onlyCFWlist():
 
 def onlyADBlock():
     print("ADBlock")
-    ad= txtContent('https://raw.githubusercontent.com/easylist/easylistchina/master/easylistchina.txt') + txtContent('https://raw.githubusercontent.com/xinggsf/Adblock-Plus-Rule/master/rule.txt')
+    #ad= txtContent('https://raw.githubusercontent.com/easylist/easylistchina/master/easylistchina.txt') + txtContent('https://raw.githubusercontent.com/xinggsf/Adblock-Plus-Rule/master/rule.txt')
+    ad = txtContent('https://raw.githubusercontent.com/AdguardTeam/FiltersRegistry/master/filters/filter_15_DnsFilter/filter.txt')
     con = conConfig(domainList(ad), 'Reject')
     con = '# ADBlock Start' + con + '\n' + '# ADBlock End'
     # 只去广告
@@ -126,7 +91,7 @@ def onlyADBlock():
     writeToConf('ADBlock.conf', con2)
     # 全局代理 + 去广告
     con3 = con + '\n' + '# Final' + '\n' + 'FINAL,PROXY'
-    writeToConf('ADBlock.conf', con3)
+    writeToConf('ADBlockAndProxy.conf', con3)
     return con
 
 def CFWlistAndADBlock():
@@ -135,7 +100,7 @@ def CFWlistAndADBlock():
 
 def onlyWhitelist():
     print("Whitelist")
-    con = conConfig(domainList2(txtContent('https://raw.githubusercontent.com/felixonmars/dnsmasq-china-list/master/accelerated-domains.china.conf')),"DIRECT")
+    con = conConfig(domainList(txtContent('https://raw.githubusercontent.com/felixonmars/dnsmasq-china-list/master/accelerated-domains.china.conf')),"DIRECT")
     # 国内直连，国外代理
     con = '# Whitelist Start' + con + '\n' + '# Whitelist End' + '\n' + '# China' + '\n' + 'GEOIP,CN,DIRECT' + '\n' + '# Final' + '\n' + 'FINAL,PROXY'
     writeToConf('Whitelist.conf', con)
